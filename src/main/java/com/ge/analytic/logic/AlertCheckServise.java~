@@ -1,0 +1,65 @@
+package com.ge.analytic.logic;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.ge.analytic.dao.AnalyticDao;
+import com.ge.analytic.dao.ReadingsDao;
+import com.ge.analytic.models.AnalyticAlert;
+import com.ge.analytic.models.Readings;
+
+@Component
+public class AlertCheckServise {
+	
+	public boolean checkAlerts() throws ParseException {
+		boolean result;
+		String start="2016-11-05 00:00:00+00";
+		String end="2016-11-17 00:00:00+00";
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+		List<Readings> readings= readingsDao.findByVehicleidAndLatesttimestampBetween("abc", format.parse(start), format.parse(end));
+		result=getFualAnlytic(readings);	
+		System.out.println(readings.get(0).getFuelConsumptionRate());
+		return result;
+	}
+
+	public void delete(AnalyticAlert alert) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public List<AnalyticAlert> getAlerts(String vehicleNo) {
+		return  analyticDao.findByVehicleNumber(vehicleNo);
+	}
+	
+	
+	public boolean getFualAnlytic(List<Readings> readings) {
+		int fualLevel=0;
+		int flevel=0;
+		System.out.println("------------------> size of record "+readings.size());
+		for (Readings reading: readings){
+			String level=reading.getFuelLevel().replaceAll("[^\\d.]", "");
+			if(!level.equalsIgnoreCase("")){
+				flevel=Integer.parseInt(level);
+			}
+			fualLevel=fualLevel+flevel;
+		}
+		if ((fualLevel/readings.size())<20){
+			String alertMessage="Your Vehicle has Low fual : "+fualLevel+"%";
+			analyticDao.save(new AnalyticAlert(readings.get(0).getVehicleid(), "Fual", alertMessage, new Date()));
+		}
+		return true;
+	}
+	
+	@Autowired
+	  private ReadingsDao readingsDao;	
+	@Autowired
+	  private AnalyticDao analyticDao;
+	
+}
