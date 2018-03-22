@@ -1,0 +1,10 @@
+---
+applications:
+  - name: vds-analytic
+    buildpack: java_buildpack
+    memory: 512M
+    path: target/vds-analytic-0.0.1-SNAPSHOT.jar
+    timeout : 180
+env:
+   SPRING_PROFILES_ACTIVE : cloud  
+   

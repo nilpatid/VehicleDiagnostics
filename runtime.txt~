@@ -1,0 +1,12 @@
+{
+  "trustedIssuerIds": [
+    "https://71127ab9-3986-4b5e-b4fb-96710a31dca0.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token"
+  ],
+  "dependentServices": {
+     "predixAnalyticsCatalogZoneId": "8ceb39e9-21f7-479b-95ec-a80865fc7bd0"
+  },
+  "trustedClientCredential": {
+    "clientId": "vds-client2",
+    "clientSecret": "test@1234"
+  }
+}
